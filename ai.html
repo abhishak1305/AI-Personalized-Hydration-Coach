@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydration AI Coach - Professional Water Intake Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2389da;
+            --primary-dark: #1a6fb1;
+            --primary-light: #e3f0fc;
+            --primary-gradient: linear-gradient(135deg, #3498db, #1a6fb1);
+            --secondary: #24cc6c;
+            --secondary-dark: #1ea55a;
+            --secondary-light: #e8f8ef;
+            --secondary-gradient: linear-gradient(135deg, #2ecc71, #27ae60);
+            --accent: #e74c3c;
+            --accent-light: #fce8e6;
+            --accent-dark: #c0392b;
+            --dark: #2c3e50;
+            --darker: #1a252f;
+            --light: #ecf0f1;
+            --lighter: #f9f9f9;
+            --text: #34495e;
+            --text-light: #7f8c8d;
+            --bot-bubble: #f8fbfe;
+            --bot-bubble-dark: #e3f0fc;
+            --user-bubble: #f0f9f3;
+            --user-bubble-dark: #d0e9d4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
+            --shadow-strong: 0 10px 20px rgba(0, 0, 0, 0.15);
+            --shadow-card: 0 8px 16px rgba(46, 60, 73, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-bounce: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --glass-effect: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+        }
+
+        body {
+            background-color: #f5f9fc;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(52, 152, 219, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(46, 204, 113, 0.07) 0%, transparent 20%);
+            background-attachment: fixed;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Glassmorphism Navigation */
+        .navbar {
+            background: var(--glass-effect);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 30px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.3rem 0.5rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo:hover {
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .logo::before {
+            content: "💧";
+            font-size: 1.6rem;
+            filter: drop-shadow(0 2px 3px rgba(52, 152, 219, 0.3));
+            transition: var(--transition);
+        }
+
+        .logo:hover::before {
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        .logo::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+
+        .logo:hover::after {
+            width: 100%;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .navbar a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            font-size: 0.95rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .navbar a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-light);
+            border-radius: 20px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: var(--transition);
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        .navbar a:hover {
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+        }
+
+        .navbar a:hover::before {
+            transform: scaleX(1);
+        }
+
+        .navbar a i {
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .navbar a:hover i {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            flex: 1;
+        }
+
+        /* Hero Section with Glass Effect */
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.9), rgba(26, 111, 177, 0.9));
+            color: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-strong);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, 
+                rgba(52, 152, 219, 0.3) 0%, 
+                rgba(26, 111, 177, 0.4) 50%, 
+                rgba(46, 204, 113, 0.3) 100%);
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.8;
+        }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1551076805-e1869033e561?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80') center/cover;
+            opacity: 0.1;
+            z-index: -2;
+            transition: var(--transition);
+        }
+
+        .header:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.25);
+        }
+
+        .header:hover::after {
+            opacity: 0.15;
+            transform: scale(1.05);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            font-weight: 700;
+        }
+
+        .header h1 i {
+            margin-right: 0.5rem;
+            display: inline-block;
+            transition: var(--transition-bounce);
+        }
+
+        .header:hover h1 i {
+            transform: rotate(-10deg) scale(1.2);
+        }
+
+        .header p {
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-weight: 400;
+        }
+
+        .header .creator {
+            margin-top: 1.5rem;
+            font-weight: bold;
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .header:hover .creator {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Enhanced Chat Container */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+
+        .chat-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg, 
+                rgba(52, 152, 219, 0.03) 0%, 
+                rgba(46, 204, 113, 0.03) 100%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .chat-container:hover {
+            box-shadow: 0 15px 30px rgba(46, 60, 73, 0.12);
+            transform: translateY(-3px);
+        }
+
+        .chat-header {
+            padding: 1.2rem 1.5rem;
+            background: var(--primary-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .chat-header::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+
+        .chat-header i {
+            font-size: 1.3rem;
+            animation: pulse 2.5s infinite;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.8rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            background-color: var(--lighter);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(52, 152, 219, 0.03) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(46, 204, 113, 0.03) 0%, transparent 25%);
+            position: relative;
+            z-index: 1;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 1.2rem 1.6rem;
+            border-radius: 16px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.4s ease-out;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: var(--transition);
+            z-index: 1;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-message {
+            background: var(--bot-bubble);
+            align-self: flex-start;
+            border-top-left-radius: 2px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .bot-message:hover {
+            background: var(--bot-bubble-dark);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.15);
+        }
+
+        .user-message {
+            background: var(--user-bubble);
+            align-self: flex-end;
+            border-top-right-radius: 2px;
+            border-right: 4px solid var(--secondary);
+        }
+
+        .user-message:hover {
+            background: var(--user-bubble-dark);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.15);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 0.4rem;
+            padding: 1rem 1.5rem;
+            background: var(--bot-bubble);
+            border-radius: 16px;
+            width: fit-content;
+            align-self: flex-start;
+            border-top-left-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingAnimation {
+            0%, 100% { opacity: 0.4; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-5px); }
+        }
+
+        /* Enhanced Chat Input */
+        .chat-input {
+            display: flex;
+            padding: 1.2rem;
+            background: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 1;
+        }
+
+        .chat-input::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(to top, white, transparent);
+            z-index: -1;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 30px;
+            outline: none;
+            transition: var(--transition);
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.01);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .chat-input input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            background: white;
+        }
+
+        .chat-input button {
+            margin-left: 0.8rem;
+            padding: 1rem 1.8rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 3px 8px rgba(52, 152, 219, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-input button::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s ease;
+        }
+
+        .chat-input button:hover {
+            background: linear-gradient(135deg, #2389da, #196aaa);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .chat-input button:hover::after {
+            transform: translateX(100%);
+        }
+
+        .chat-input button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(52, 152, 219, 0.2);
+        }
+
+        .chat-input button i {
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .chat-input button:hover i {
+            transform: rotate(10deg) translateX(2px);
+        }
+
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            backdrop-filter: blur(5px);
+        }
+
+        .location-badge:hover {
+            background: rgba(52, 152, 219, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Enhanced Action Cards */
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+        }
+
+        .action-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: var(--primary-light);
+            border-radius: 0 0 0 100%;
+            opacity: 0.1;
+            z-index: -1;
+            transition: var(--transition);
+        }
+
+        .action-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.03), rgba(46, 204, 113, 0.03));
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .action-card:hover::before {
+            transform: scale(1.5);
+            opacity: 0.15;
+        }
+
+        .action-card:hover::after {
+            opacity: 1;
+        }
+
+        .action-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(46, 60, 73, 0.12);
+            border-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .action-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .action-card h3 i {
+            font-size: 1.4rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition-bounce);
+        }
+
+        .action-card:hover h3 i {
+            transform: scale(1.2) rotate(10deg);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .action-card p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .action-card button {
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(46, 204, 113, 0.2);
+            z-index: 1;
+        }
+
+        .action-card button::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s ease;
+        }
+
+        .action-card button:hover {
+            background: linear-gradient(135deg, #24cc6c, #1b995a);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(46, 204, 113, 0.25);
+        }
+
+        .action-card button:hover::after {
+            transform: translateX(100%);
+        }
+
+        .action-card button:active {
+            transform: translateY(-1px);
+        }
+
+        .action-card button i {
+            transition: var(--transition);
+        }
+
+        .action-card button:hover i {
+            transform: rotate(15deg) scale(1.2);
+        }
+
+        /* Enhanced Form Elements */
+        .form-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .form-group:focus-within label {
+            color: var(--primary);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: rgba(0, 0, 0, 0.01);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: #ccc;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15), inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            background: white;
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(52, 152, 219, 0.2);
+            z-index: 1;
+        }
+
+        .form-submit::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s ease;
+        }
+
+        .form-submit:hover {
+            background: linear-gradient(135deg, #2389da, #196aaa);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(52, 152, 219, 0.25);
+        }
+
+        .form-submit:hover::after {
+            transform: translateX(100%);
+        }
+
+        .form-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .form-submit i {
+            margin-left: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .form-submit:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Enhanced Intake Buttons */
+        .intake-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin: 1.2rem 0;
+        }
+
+        .intake-button {
+            flex: 1;
+            padding: 0.9rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            box-shadow: 0 3px 8px rgba(52, 152, 219, 0.15);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .intake-button::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s ease;
+        }
+
+        .intake-button:hover {
+            background: linear-gradient(135deg, #2389da, #196aaa);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.25);
+        }
+
+        .intake-button:hover::after {
+            transform: translateX(100%);
+        }
+
+        .intake-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Enhanced Progress Bar */
+        progress {
+            width: 100%;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: var(--transition);
+            margin: 0.8rem 0;
+            border: none;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        progress::-webkit-progress-bar {
+            background-color: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        progress::-webkit-progress-value {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.7s ease;
+        }
+
+        progress:hover {
+            transform: scaleY(1.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Enhanced Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--dark);
+            color: white;
+            margin-top: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--darker) 0%, transparent 100%);
+            opacity: 0.7;
+            z-index: 0;
+        }
+
+        .footer p {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer .creator {
+            font-weight: bold;
+            color: var(--primary-light);
+            position: relative;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .footer .creator:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .footer .creator::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+
+        .footer .creator:hover::after {
+            width: 100%;
+        }
+
+        /* Enhanced Clock and Weather Section */
+        .clock-weather {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .clock-weather div {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--glass-effect);
+            padding: 0.7rem 1.2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
+        }
+
+        .clock-weather div:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .clock-weather i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .clock-weather .time {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .clock-weather .temperature {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+
+        .clock-weather .weather {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        /* Enhanced Reminder and Analytics Sections */
+        .reminder-section, .analytics-section {
+            background: var(--glass-effect);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            margin-top: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .reminder-section:hover, .analytics-section:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(52, 152, 219, 0.2);
+        }
+
+        .reminder-section h3, .analytics-section h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reminder-section p, .analytics-section p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .reminder-section button, .analytics-section button {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--secondary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 3px 8px rgba(46, 204, 113, 0.15);
+        }
+
+        .reminder-section button:hover, .analytics-section button:hover {
+            background: linear-gradient(135deg, #24cc6c, #1b995a);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
+        }
+
+        .reminder-section button:active, .analytics-section button:active {
+            transform: translateY(0);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+            border: 2px solid #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Enhanced Tooltip for buttons */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::before,
+        [data-tooltip]::after {
+            position: absolute;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        [data-tooltip]::before {
+            content: attr(data-tooltip);
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: var(--dark);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-tooltip]::after {
+            content: "";
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            border: 5px solid transparent;
+            border-top-color: var(--dark);
+            margin-bottom: -5px;
+        }
+
+        [data-tooltip]:hover::before,
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+
+            .navbar a {
+                margin: 0;
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .chat-container {
+                height: 70vh;
+            }
+
+            .action-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .message {
+                max-width: 90%;
+            }
+
+            .clock-weather {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation Bar with Glass Effect -->
+    <div class="navbar">
+        <div class="logo">Hydration AI Coach - By <b>Abhishak Chaturvedi (12310636)</b></div>
+        <div class="nav-links">
+            <a href="#login" data-tooltip="Access your account"><i class="fas fa-user"></i> Login</a>
+            <a href="#signup" data-tooltip="Create new account"><i class="fas fa-user-plus"></i> Sign Up</a>
+            <a href="#contact" data-tooltip="Get in touch"><i class="fas fa-envelope"></i> Contact</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Enhanced Clock and Weather Section -->
+        <div class="clock-weather">
+            <div class="time-section">
+                <i class="fas fa-clock"></i>
+                <span class="time">Loading...</span>
+            </div>
+            <div class="weather-section">
+                <i class="fas fa-cloud-sun"></i>
+                <span class="temperature">Loading...</span>
+                <span class="weather">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Enhanced Header with Gradient Glass Effect -->
+        <div class="header">
+            <h1><i class="fas fa-tint"></i> Professional Hydration Assistant</h1>
+            <p>AI-powered water intake recommendations based on your profile and environment</p>
+            <span class="creator">Created by - Abhishak Chaturvedi (12310636)</span>
+        </div>
+
+        <!-- Enhanced Chat Container -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <i class="fas fa-robot"></i>
+                <span>Hydration AI Assistant</span>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="bot-message message">
+                    <strong>Hello!</strong> I'm your Hydration AI Coach created by <b>Abhishak Chaturvedi</b>. I can help you determine your optimal water intake based on:
+                    <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                        <li>Your body metrics (weight, age, gender)</li>
+                        <li>Activity level and exercise</li>
+                        <li>Local weather conditions</li>
+                    </ul>
+                    Please fill out the form below to get started:
+                    <form id="userForm">
+                        <div class="form-group">
+                            <label for="weight">Weight (kg):</label>
+                            <input type="number" id="weight" name="weight" required min="30" max="200" aria-describedby="weightError">
+                            <span id="weightError" style="color: var(--accent); font-size: 0.8rem; display: none;">Weight must be between 30 and 200 kg.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age:</label>
+                            <input type="number" id="age" name="age" required min="1" max="120" aria-describedby="ageError">
+                            <span id="ageError" style="color: var(--accent); font-size: 0.8rem; display: none;">Age must be between 1 and 120.</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" name="gender" required>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="activityLevel">Activity Level:</label>
+                            <select id="activityLevel" name="activityLevel" required>
+                                <option value="sedentary">Sedentary (little or no exercise)</option>
+                                <option value="moderate">Moderate (light exercise/sports 1-3 days/week)</option>
+                                <option value="active">Active (moderate exercise/sports 3-5 days/week)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="form-submit">Get Recommendations <i class="fas fa-arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Tell me your weight or ask about hydration..." autocomplete="off">
+                <button id="sendButton" data-tooltip="Send message"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </div>
+
+        <!-- Enhanced Action Cards -->
+        <div class="action-cards">
+            <div class="action-card">
+                <h3><i class="fas fa-calendar-alt"></i> Daily Plan</h3>
+                <p>Get a personalized hydration schedule based on your daily routine and activities.</p>
+                <button onclick="getDailyPlan()"><i class="fas fa-plus-circle"></i> Create My Plan</button>
+            </div>
+            <div class="action-card">
+                <h3><i class="fas fa-chart-line"></i> Track Intake</h3>
+                <p>Log your water consumption and get insights on your hydration patterns.</p>
+                <button onclick="trackIntake()"><i class="fas fa-check-circle"></i> Start Tracking</button>
+            </div>
+            <div class="action-card">
+                <h3><i class="fas fa-map-marker-alt"></i> Location Analysis</h3>
+                <p>Enable location for weather-adjusted hydration recommendations.</p>
+                <button onclick="getDetailedLocation()"><i class="fas fa-location-arrow"></i> Share Location</button>
+            </div>
+        </div>
+
+        <!-- Enhanced Reminder Section -->
+        <div class="reminder-section">
+            <h3><i class="fas fa-bell"></i> Reminders</h3>
+            <p>Set reminders to stay hydrated throughout the day.</p>
+            <button onclick="setReminder()"><i class="fas fa-clock"></i> Set Reminder</button>
+        </div>
+
+        <!-- Enhanced Analytics Section -->
+        <div class="analytics-section">
+            <h3><i class="fas fa-chart-pie"></i> Hydration Analytics</h3>
+            <p>Track your hydration patterns over time.</p>
+            <button onclick="showAnalytics()"><i class="fas fa-chart-bar"></i> View Analytics</button>
+        </div>
+    </div>
+
+    <!-- Enhanced Footer -->
+    <div class="footer">
+        <p>© 2025 Hydration AI Coach - By <span class="creator">Abhishak Chaturvedi (12310636)</span><br>Medical Disclaimer: Consult a healthcare professional for medical advice.</p>
+    </div>
+
+    <script>
+        // Configuration
+        const API_KEY = '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';
+
+        const MODEL = 'mistralai/mistral-small-3.1-24b-instruct:free';
+        const WEATHER_API_URL = 'https://api.open-meteo.com/v1/forecast';
+        const LOCATION_API_URL = 'https://nominatim.openstreetmap.org/reverse';
+
+// Utility function for sanitizing inputs to prevent XSS
+function sanitizeInput(input) {
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
+}
+
+// User data object
+const userData = {
+    weight: null,
+    age: null,
+    gender: null,
+    activityLevel: null,
+    location: null,
+    weather: null,
+    dailyIntake: 0,
+    dailyGoal: 3000, // Default goal in ml
+    chatHistory: []
+};
+
+// DOM elements
+const chatMessages = document.getElementById('chatMessages');
+const userInput = document.getElementById('userInput');
+const sendButton = document.getElementById('sendButton');
+const userForm = document.getElementById('userForm');
+const timeElement = document.querySelector('.time');
+const temperatureElement = document.querySelector('.temperature');
+const weatherElement = document.querySelector('.weather');
+
+// Initialize chat
+document.addEventListener('DOMContentLoaded', () => {
+    userInput.focus();
+    sendButton.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+    userForm.addEventListener('submit', handleFormSubmit);
+    setInterval(updateTime, 1000);
+    getWeather();
+    loadChatHistory();
+    addCustomStyles();
+    addClearButton();
+});
+
+// Load chat history from local storage
+function loadChatHistory() {
+    const savedData = localStorage.getItem('hydrationCoachData');
+    if (savedData) {
+        try {
+            const parsedData = JSON.parse(savedData);
+            if (parsedData.userData) {
+                Object.assign(userData, parsedData.userData);
+                updateIntakeUI();
+            }
+            if (parsedData.chatHistory && Array.isArray(parsedData.chatHistory)) {
+                parsedData.chatHistory.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = msg.isUser ? 'user-message message' : 'bot-message message';
+                    messageDiv.innerHTML = msg.content;
+                    chatMessages.appendChild(messageDiv);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        } catch (error) {
+            console.error('Error loading chat history:', error);
+            addMessage("Error loading previous chat history.", false);
+        }
+    }
+    if (chatMessages.children.length === 0) {
+        addMessage("Hello! I'm your Hydration AI Coach, created by Abhishak Chaturvedi. I can help you stay hydrated based on your profile and local conditions. Please fill out the form or ask me anything!");
+    }
+}
+
+// Save chat history with debouncing
+let saveTimeout;
+function saveChatHistory() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+        const visibleMessages = [];
+        document.querySelectorAll('.message:not(.typing-indicator)').forEach(msgElement => {
+            visibleMessages.push({
+                content: msgElement.innerHTML,
+                isUser: msgElement.classList.contains('user-message')
+            });
+        });
+        localStorage.setItem('hydrationCoachData', JSON.stringify({
+            userData: { ...userData },
+            chatHistory: visibleMessages
+        }));
+    }, 500);
+}
+
+// Update time display
+function updateTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    timeElement.textContent = `${hours}:${minutes}`;
+}
+
+// Fetch weather and location data
+async function getWeather() {
+    if (!navigator.geolocation) {
+        weatherElement.textContent = 'Geolocation not available';
+        addMessage("Geolocation is not supported by your browser.", false);
+        return;
+    }
+
+    weatherElement.textContent = 'Fetching...';
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                timeout: 10000,
+                maximumAge: 0
+            });
+        });
+
+        const { latitude, longitude } = position.coords;
+        userData.location = { latitude, longitude };
+
+        // Fetch weather data
+        const weatherResponse = await fetch(`${WEATHER_API_URL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m&timezone=auto`);
+        if (!weatherResponse.ok) throw new Error('Weather data unavailable');
+
+        const weatherData = await weatherResponse.json();
+        userData.weather = {
+            temp: weatherData.current.temperature_2m,
+            humidity: weatherData.current.relative_humidity_2m
+        };
+
+        temperatureElement.textContent = `${userData.weather.temp}°C`;
+        weatherElement.textContent = `Humidity: ${userData.weather.humidity}%`;
+
+        // Fetch location name
+        try {
+            const locationResponse = await fetch(`${LOCATION_API_URL}?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
+            const locationData = await locationResponse.json();
+            userData.location.name = locationData.address ?
+                [locationData.address.city || locationData.address.town || locationData.address.village,
+                locationData.address.state,
+                locationData.address.country].filter(Boolean).join(', ') :
+                'Unknown location';
+        } catch (error) {
+            console.error('Location name error:', error);
+            userData.location.name = 'Unknown location';
+        }
+
+        if (userData.weight) {
+            userData.dailyGoal = calculateWaterGoal();
+            updateIntakeUI();
+        }
+    } catch (error) {
+        console.error('Weather error:', error);
+        weatherElement.textContent = 'Weather data unavailable';
+        addMessage("Couldn't fetch weather data. Using default values.", false);
+        userData.weather = { temp: 25, humidity: 50 };
+        temperatureElement.textContent = `${userData.weather.temp}°C (default)`;
+    }
+}
+
+// Show typing indicator
+function showTyping() {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'typing-indicator';
+    typingDiv.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    `;
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return typingDiv;
+}
+
+// Add message to chat
+function addMessage(content, isUser = false, shouldSave = true) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = isUser ? 'user-message message' : 'bot-message message';
+
+    if (typeof content === 'string') {
+        messageDiv.innerHTML = sanitizeInput(content);
+    } else {
+        messageDiv.appendChild(content);
+    }
+
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    if (shouldSave) {
+        saveChatHistory();
+    }
+}
+
+// Calculate daily water goal
+function calculateWaterGoal() {
+    if (!userData.weight) return 3000;
+
+    let goal = Math.round(userData.weight * 33);
+    if (userData.age) {
+        if (userData.age > 65) goal += 200;
+        else if (userData.age < 18) goal -= 200;
+    }
+    if (userData.activityLevel === 'moderate') goal += 500;
+    else if (userData.activityLevel === 'active') goal += 1000;
+    if (userData.weather) {
+        if (userData.weather.temp > 25) goal += Math.round((userData.weather.temp - 25) * 50);
+        if (userData.weather.humidity < 40) goal += 300;
+    }
+    return Math.round(goal / 100) * 100;
+}
+
+// Update intake progress UI
+function updateIntakeUI() {
+    const progress = document.getElementById('intakeProgress');
+    const text = document.getElementById('intakeText');
+
+    if (progress && text) {
+        progress.max = userData.dailyGoal;
+        progress.value = userData.dailyIntake;
+        progress.setAttribute('aria-valuenow', userData.dailyIntake);
+        progress.setAttribute('aria-valuemax', userData.dailyGoal);
+        const percent = Math.round((userData.dailyIntake / userData.dailyGoal) * 100);
+        text.textContent = `${userData.dailyIntake}ml / ${userData.dailyGoal}ml (${percent}%)`;
+
+        if (userData.dailyIntake >= userData.dailyGoal) {
+            text.innerHTML += ` <span style="color: var(--secondary); font-weight:bold;">Goal reached! <i class="fas fa-check"></i></span>`;
+        }
+    }
+}
+
+// Process user input with AI
+async function processWithAI(prompt) {
+    const typingIndicator = showTyping();
+    try {
+        let systemPrompt = `You are a professional hydration coach AI created by Abhishak Chaturvedi. Provide concise, accurate, and personalized hydration advice based on user data:
+        - Weight, age, gender, activity level
+        - Local weather (temperature, humidity)
+        - Exercise and health conditions
+        Respond conversationally, explain reasoning briefly, and use precise measurements.`;
+
+        if (userData.weight || userData.age || userData.gender || userData.activityLevel) {
+            systemPrompt += `\n\nUser profile:`;
+            if (userData.weight) systemPrompt += `\n- Weight: ${userData.weight}kg`;
+            if (userData.age) systemPrompt += `\n- Age: ${userData.age} years`;
+            if (userData.gender) systemPrompt += `\n- Gender: ${userData.gender}`;
+            if (userData.activityLevel) systemPrompt += `\n- Activity level: ${userData.activityLevel}`;
+        }
+
+        if (userData.weather) {
+            systemPrompt += `\n\nWeather conditions:`;
+            systemPrompt += `\n- Temperature: ${userData.weather.temp}°C`;
+            systemPrompt += `\n- Humidity: ${userData.weather.humidity}%`;
+            if (userData.location?.name) systemPrompt += `\n- Location: ${userData.location.name}`;
+        }
+
+        if (userData.dailyGoal) {
+            systemPrompt += `\n\nHydration tracking:`;
+            systemPrompt += `\n- Daily goal: ${userData.dailyGoal}ml`;
+            systemPrompt += `\n- Current intake: ${userData.dailyIntake}ml`;
+        }
+
+        const messages = [
+            { role: "system", content: systemPrompt },
+            ...Array.from(document.querySelectorAll('.message:not(.typing-indicator)'))
+                .slice(-10)
+                .map(msg => ({
+                    role: msg.classList.contains('user-message') ? 'user' : 'assistant',
+                    content: msg.textContent
+                })),
+            { role: "user", content: prompt }
+        ];
+
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: MODEL,
+                messages,
+                temperature: 0.7
+            })
+        });
+
+        if (!response.ok) {
+            if (response.status === 429) throw new Error('Rate limit exceeded. Please try again later.');
+            if (response.status === 401) throw new Error('Authentication error. Please contact support.');
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!data.choices?.[0]?.message?.content) throw new Error('Invalid AI response.');
+
+        chatMessages.removeChild(typingIndicator);
+        const aiResponse = data.choices[0].message.content;
+        addMessage(aiResponse);
+        extractUserData(prompt, aiResponse);
+    } catch (error) {
+        console.error('AI Error:', error);
+        chatMessages.removeChild(typingIndicator);
+        addMessage(`Error: ${error.message || "Something went wrong with the AI service."}`);
+    }
+}
+
+// Extract user data from messages
+function extractUserData(userPrompt, aiResponse) {
+    const weightMatch = userPrompt.match(/(\d+)\s*kg/i);
+    if (weightMatch) userData.weight = parseInt(weightMatch[1]);
+
+    const ageMatch = userPrompt.match(/(\d+)\s*years?\s*(old)?/i);
+    if (ageMatch) userData.age = parseInt(ageMatch[1]);
+
+    const genderMatch = userPrompt.match(/\b(male|female|non-binary|other)\b/i);
+    if (genderMatch) userData.gender = genderMatch[1].toLowerCase();
+
+    const activityMatch = userPrompt.match(/\b(sedentary|moderate|active)\b/i);
+    if (activityMatch) userData.activityLevel = activityMatch[1].toLowerCase();
+
+    if (userData.weight) {
+        userData.dailyGoal = calculateWaterGoal();
+        updateIntakeUI();
+    }
+    saveChatHistory();
+}
+
+// Send message handler
+function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    addMessage(message, true);
+    userInput.value = '';
+    processWithAI(message);
+}
+
+// Handle form submission
+function handleFormSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(userForm);
+    userData.weight = formData.get('weight') ? parseFloat(formData.get('weight')) : null;
+    userData.age = formData.get('age') ? parseInt(formData.get('age')) : null;
+    userData.gender = formData.get('gender');
+    userData.activityLevel = formData.get('activityLevel');
+
+    if (!validateFormInputs()) return;
+
+    const prompt = `Based on my weight (${userData.weight} kg), age (${userData.age}), gender (${userData.gender}), and activity level (${userData.activityLevel}), what's my recommended daily water intake? Explain briefly.`;
+    addMessage(prompt, true);
+    processWithAI(prompt);
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Update Profile';
+    editButton.className = 'form-submit';
+    editButton.onclick = () => {
+        userForm.style.display = 'block';
+        editButton.remove();
+    };
+    userForm.style.display = 'none';
+    chatMessages.appendChild(editButton);
+}
+
+// Validate form inputs
+function validateFormInputs() {
+    let isValid = true;
+    const weightInput = document.getElementById('weight');
+    const ageInput = document.getElementById('age');
+    const weightError = document.getElementById('weightError');
+    const ageError = document.getElementById('ageError');
+
+    if (weightInput.value < 30 || weightInput.value > 200) {
+        weightError.style.display = 'block';
+        isValid = false;
+    } else {
+        weightError.style.display = 'none';
+    }
+
+    if (ageInput.value < 1 || ageInput.value > 120) {
+        ageError.style.display = 'block';
+        isValid = false;
+    } else {
+        ageError.style.display = 'none';
+    }
+
+    return isValid;
+}
+
+// Get detailed location data
+async function getDetailedLocation() {
+    if (!navigator.geolocation) {
+        addMessage("Geolocation is not supported by your browser.");
+        return;
+    }
+
+    const typingIndicator = showTyping();
+    try {
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                timeout: 10000,
+                maximumAge: 0
+            });
+        });
+
+        const { latitude, longitude } = position.coords;
+        userData.location = { latitude, longitude };
+
+        const locationResponse = await fetch(`${LOCATION_API_URL}?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
+        if (!locationResponse.ok) throw new Error('Location data unavailable');
+
+        const locationData = await locationResponse.json();
+        const locationString = locationData.address ?
+            [locationData.address.road,
+            locationData.address.neighbourhood || locationData.address.suburb,
+            locationData.address.city || locationData.address.town || locationData.address.village,
+            locationData.address.state].filter(Boolean).join(', ') :
+            'Your current location';
+
+        userData.location.name = locationData.address ?
+            [locationData.address.city || locationData.address.town || locationData.address.village,
+            locationData.address.state,
+            locationData.address.country].filter(Boolean).join(', ') :
+            'Unknown location';
+
+        const weatherResponse = await fetch(`${WEATHER_API_URL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature&daily=temperature_2m_max,temperature_2m_min&timezone=auto`);
+        if (!weatherResponse.ok) throw new Error('Weather data unavailable');
+
+        const weatherData = await weatherResponse.json();
+        userData.weather = {
+            temp: weatherData.current.temperature_2m,
+            humidity: weatherData.current.relative_humidity_2m,
+            feelsLike: weatherData.current.apparent_temperature,
+            maxTemp: weatherData.daily.temperature_2m_max[0],
+            minTemp: weatherData.daily.temperature_2m_min[0]
+        };
+
+        temperatureElement.textContent = `${userData.weather.temp}°C`;
+        weatherElement.textContent = `Humidity: ${userData.weather.humidity}%`;
+
+        chatMessages.removeChild(typingIndicator);
+        const locationDiv = document.createElement('div');
+        locationDiv.innerHTML = `
+            <p>Location detected: <strong>${locationString}</strong></p>
+            <div class="weather-info">
+                <div class="location-badge">
+                    <i class="fas fa-temperature-low"></i> ${userData.weather.temp}°C (feels like ${userData.weather.feelsLike}°C)
+                </div>
+                <div class="location-badge">
+                    <i class="fas fa-tint"></i> ${userData.weather.humidity}% humidity
+                </div>
+                <div class="location-badge">
+                    <i class="fas fa-thermometer-full"></i> High/Low: ${userData.weather.maxTemp}°C/${userData.weather.minTemp}°C
+                </div>
+            </div>
+        `;
+        addMessage(locationDiv);
+
+        if (userData.weight) {
+            const previousGoal = userData.dailyGoal;
+            userData.dailyGoal = calculateWaterGoal();
+            if (userData.dailyGoal !== previousGoal) {
+                addMessage(`Based on your local weather, I've adjusted your daily hydration goal to <strong>${userData.dailyGoal}ml</strong>.`);
+            }
+        }
+        saveChatHistory();
+    } catch (error) {
+        console.error('Location Error:', error);
+        chatMessages.removeChild(typingIndicator);
+        addMessage(`Couldn't access your location: ${error.message}. Please check permissions.`);
+    }
+}
+
+// Get personalized recommendation
+function getRecommendation() {
+    let prompt = "Provide a personalized hydration recommendation for today.";
+    if (userData.weight) prompt += ` My weight is ${userData.weight}kg.`;
+    if (userData.age) prompt += ` I am ${userData.age} years old.`;
+    if (userData.gender) prompt += ` My gender is ${userData.gender}.`;
+    if (userData.activityLevel) prompt += ` My activity level is ${userData.activityLevel}.`;
+    if (userData.weather) {
+        prompt += ` Weather: ${userData.weather.temp}°C, ${userData.weather.humidity}% humidity.`;
+        if (userData.location?.name) prompt += ` Location: ${userData.location.name}.`;
+    }
+    if (userData.dailyGoal) {
+        prompt += ` My goal is ${userData.dailyGoal}ml, with ${userData.dailyIntake}ml consumed.`;
+    }
+    prompt += " Include specific advice on amount, timing, and tips.";
+
+    addMessage(prompt, true);
+    processWithAI(prompt);
+}
+
+// Create daily hydration plan
+function getDailyPlan() {
+    let prompt = "Create a detailed hourly hydration plan for my day";
+    if (userData.dailyGoal) prompt += ` with a total goal of ${userData.dailyGoal}ml`;
+    if (userData.activityLevel) prompt += ` considering my ${userData.activityLevel} activity level`;
+    if (userData.weather) {
+        prompt += `. Weather: ${userData.weather.temp}°C, ${userData.weather.humidity}% humidity`;
+        if (userData.location?.name) prompt += ` in ${userData.location.name}`;
+    }
+    prompt += `. Include specific times and quantities.`;
+
+    addMessage(prompt, true);
+    processWithAI(prompt);
+}
+
+// Track water intake
+function trackIntake() {
+    const intakeDiv = document.createElement('div');
+    intakeDiv.innerHTML = `
+        <div class="intake-tracker">
+            <h3>Water Intake Tracker</h3>
+            <p>Daily Goal: ${userData.dailyGoal || 3000}ml</p>
+            <div class="intake-buttons">
+                <button class="intake-button" onclick="logIntake(250)">+250ml</button>
+                <button class="intake-button" onclick="logIntake(500)">+500ml</button>
+                <button class="intake-button" onclick="logIntake(1000)">+1L</button>
+                <button class="intake-button custom" onclick="logCustomIntake()">Custom</button>
+            </div>
+            <progress id="intakeProgress" value="${userData.dailyIntake}" max="${userData.dailyGoal || 3000}" aria-label="Daily water intake progress" aria-valuenow="${userData.dailyIntake}" aria-valuemin="0" aria-valuemax="${userData.dailyGoal || 3000}"></progress>
+            <p id="intakeText" class="intake-text">
+                ${userData.dailyIntake}ml / ${userData.dailyGoal || 3000}ml (${Math.round((userData.dailyIntake / (userData.dailyGoal || 3000)) * 100)}%)
+            </p>
+        </div>
+    `;
+    addMessage(intakeDiv, false);
+}
+
+// Log custom intake
+function logCustomIntake() {
+    const amount = prompt("Enter water amount in ml:", "");
+    if (amount && !isNaN(amount) && parseInt(amount) > 0) {
+        logIntake(parseInt(amount));
+    } else {
+        addMessage("Please enter a valid amount.", false);
+    }
+}
+
+// Log water intake
+function logIntake(amount) {
+    userData.dailyIntake += amount;
+    updateIntakeUI();
+    saveChatHistory();
+    addMessage(`Logged ${amount}ml of water. ${getEncouragementMessage()}`, false);
+    if (amount >= 500) {
+        processWithAI(`I drank ${amount}ml. Total today: ${userData.dailyIntake}ml of ${userData.dailyGoal}ml. Update my progress.`);
+    }
+}
+
+// Encouragement message
+function getEncouragementMessage() {
+    const progress = userData.dailyIntake / userData.dailyGoal;
+    if (progress >= 1) return "Goal reached! Amazing job!";
+    if (progress >= 0.75) return "Almost there! Keep it up!";
+    if (progress >= 0.5) return "Great progress!";
+    if (progress >= 0.25) return "Nice start!";
+    return "Keep hydrating!";
+}
+
+// Set hydration reminder
+function setReminder() {
+    const reminderDiv = document.createElement('div');
+    reminderDiv.innerHTML = `
+        <div class="reminder-setup">
+            <h3>Set Hydration Reminder</h3>
+            <div class="reminder-inputs">
+                <label>
+                    Reminder Time:
+                    <input type="time" id="reminderTime" aria-label="Select reminder time">
+                </label>
+                <button onclick="createReminder()">Set Reminder</button>
+            </div>
+            <div class="reminder-options">
+                <button onclick="setQuickReminder(30)">In 30 mins</button>
+                <button onclick="setQuickReminder(60)">In 1 hour</button>
+                <button onclick="setQuickReminder(120)">In 2 hours</button>
+            </div>
+        </div>
+    `;
+    addMessage(reminderDiv, false);
+}
+
+// Create reminder
+function createReminder() {
+    const timeInput = document.getElementById('reminderTime');
+    if (!timeInput?.value) {
+        addMessage("Please select a valid time.");
+        return;
+    }
+
+    const [hours, minutes] = timeInput.value.split(":");
+    const now = new Date();
+    const reminderDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+    if (reminderDate < now) reminderDate.setDate(reminderDate.getDate() + 1);
+    scheduleReminder(reminderDate);
+}
+
+// Set quick reminder
+function setQuickReminder(minutes) {
+    const reminderDate = new Date(Date.now() + minutes * 60000);
+    scheduleReminder(reminderDate);
+}
+
+// Schedule reminder
+function scheduleReminder(reminderDate) {
+    const now = new Date();
+    const timeDiff = reminderDate - now;
+    if (timeDiff <= 0) {
+        addMessage("Please select a future time.");
+        return;
+    }
+
+    if (typeof Notification !== 'undefined' && Notification.permission !== 'granted') {
+        Notification.requestPermission();
+    }
+
+    const timeString = reminderDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setTimeout(() => {
+        if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+            new Notification("Hydration Reminder", {
+                body: "Time to drink some water!",
+                icon: "water-drop.png" || undefined
+            });
+        } else {
+            alert("Hydration Reminder: Time to drink some water!");
+        }
+        addMessage("Your hydration reminder! Please drink some water.");
+    }, timeDiff);
+
+    addMessage(`Set a reminder for ${timeString}.`);
+}
+
+// Show analytics (using Chart.js for better visualization)
+function showAnalytics() {
+    const analyticsDiv = document.createElement('div');
+    analyticsDiv.innerHTML = `
+        <div class="analytics-container">
+            <h3>Hydration Analytics</h3>
+            <div class="analytics-data">
+                <div class="analytics-item">
+                    <span class="analytics-label">Daily Goal:</span>
+                    <span class="analytics-value">${userData.dailyGoal || 3000}ml</span>
+                </div>
+                <div class="analytics-item">
+                    <span class="analytics-label">Current Intake:</span>
+                    <span class="analytics-value">${userData.dailyIntake}ml</span>
+                </div>
+                <div class="analytics-item">
+                    <span class="analytics-label">Progress:</span>
+                    <span class="analytics-value">${Math.round((userData.dailyIntake / (userData.dailyGoal || 3000)) * 100)}%</span>
+                </div>
+                ${userData.weather ?
+                `<div class="analytics-item">
+                    <span class="analytics-label">Weather Impact:</span>
+                    <span class="analytics-value">${userData.weather.temp}°C, ${userData.weather.humidity}% humidity</span>
+                </div>` : ''}
+            </div>
+            <div class="chart-container">
+                <canvas id="hydrationChart" width="400" height="200" aria-label="Hydration intake chart"></canvas>
+            </div>
+            <p class="analytics-tip">Tip: Consistent hydration boosts energy and focus.</p>
+        </div>
+    `;
+    addMessage(analyticsDiv, false);
+
+    setTimeout(() => {
+        const ctx = document.getElementById('hydrationChart');
+        if (ctx && typeof Chart !== 'undefined') {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['8am', '10am', '12pm', '2pm', '4pm', '6pm', '8pm'],
+                    datasets: [{
+                        label: 'Water Intake (ml)',
+                        data: [250, 500, 750, 1000, 1500, 2000, userData.dailyIntake],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: Math.max(userData.dailyGoal || 3000, ...[250, 500, 750, 1000, 1500, 2000, userData.dailyIntake])
+                        }
+                    },
+                    plugins: {
+                        legend: { display: true },
+                        tooltip: { enabled: true }
+                    }
+                }
+            });
+        }
+    }, 100);
+}
+
+// Reset all data
+function resetData() {
+    if (confirm("Reset all hydration data? This cannot be undone.")) {
+        userData.weight = null;
+        userData.age = null;
+        userData.gender = null;
+        userData.activityLevel = null;
+        userData.dailyIntake = 0;
+        userData.dailyGoal = 3000;
+        localStorage.removeItem('hydrationCoachData');
+        chatMessages.innerHTML = '';
+        addMessage("Data reset. Let's start your hydration journey!");
+    }
+}
+
+// Get hydration tips
+function getTips() {
+    let prompt = "Give me hydration tips";
+    if (userData.weather) {
+        if (userData.weather.temp > 30) prompt += " for hot weather";
+        else if (userData.weather.temp > 25) prompt += " for warm weather";
+        else if (userData.weather.temp < 10) prompt += " for cold weather";
+        if (userData.weather.humidity < 30) prompt += " and dry conditions";
+        else if (userData.weather.humidity > 70) prompt += " and humid conditions";
+    }
+    if (userData.activityLevel === 'active') prompt += ", considering I'm very active";
+    prompt += ". Keep advice practical.";
+
+    addMessage(prompt, true);
+    processWithAI(prompt);
+}
+
+// Export user data
+function exportData() {
+    const data = {
+        userData: { ...userData },
+        chatHistory: Array.from(document.querySelectorAll('.message:not(.typing-indicator)')).map(msg => ({
+            content: msg.innerHTML,
+            isUser: msg.classList.contains('user-message'),
+            timestamp: new Date().toISOString()
+        }))
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hydration-data-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    addMessage("Data exported successfully.", false);
+}
+
+// Import user data
+function importData(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = JSON.parse(e.target.result);
+            chatMessages.innerHTML = '';
+            if (data.userData) {
+                Object.assign(userData, data.userData);
+                updateIntakeUI();
+            }
+            if (data.chatHistory && Array.isArray(data.chatHistory)) {
+                data.chatHistory.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = msg.isUser ? 'user-message message' : 'bot-message message';
+                    messageDiv.innerHTML = msg.content;
+                    chatMessages.appendChild(messageDiv);
+                });
+            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            saveChatHistory();
+            addMessage("Data imported successfully.", false);
+        } catch (error) {
+            console.error("Import error:", error);
+            addMessage("Error importing data. Check file format.", false);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+// Setup import
+function setupImport() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.style.display = 'none';
+    input.addEventListener('change', importData);
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
+}
+
+// Show help
+function showHelp() {
+    const helpDiv = document.createElement('div');
+    helpDiv.innerHTML = `
+        <div class="help-container">
+            <h3>Hydration Coach Help</h3>
+            <div class="help-section">
+                <h4>Getting Started</h4>
+                <p>Provide your:</p>
+                <ul>
+                    <li>Weight (kg)</li>
+                    <li>Age</li>
+                    <li>Gender</li>
+                    <li>Activity level</li>
+                </ul>
+            </div>
+            <div class="help-section">
+                <h4>Features</h4>
+                <ul>
+                    <li><strong>Daily Plan:</strong> Hourly hydration schedule</li>
+                    <li><strong>Track Intake:</strong> Log water consumption</li>
+                    <li><strong>Location Analysis:</strong> Weather-based advice</li>
+                    <li><strong>Reminders:</strong> Hydration alerts</li>
+                    <li><strong>Analytics:</strong> View patterns</li>
+                </ul>
+            </div>
+            <div class="help-section">
+                <h4>Tips</h4>
+                <ul>
+                    <li>Drink water regularly</li>
+                    <li>Increase intake when active</li>
+                    <li>Check urine color</li>
+                    <li>Carry a water bottle</li>
+                </ul>
+            </div>
+        </div>
+    `;
+    addMessage(helpDiv, false);
+}
+
+// Add custom styles
+function addCustomStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .intake-tracker {
+            background: var(--bot-bubble);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .intake-tracker h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .intake-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            margin: 1.2rem 0;
+        }
+        .intake-button {
+            padding: 0.9rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            text-align: center;
+        }
+        .intake-button.custom {
+            grid-column: span 2;
+            background: var(--secondary-gradient);
+        }
+        .intake-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        .intake-text {
+            text-align: center;
+            margin-top: 0.8rem;
+            font-weight: 500;
+        }
+        .reminder-setup {
+            background: var(--bot-bubble);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .reminder-setup h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .reminder-inputs {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .reminder-inputs input[type="time"] {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .reminder-inputs button {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .reminder-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .reminder-options button {
+            flex: 1;
+            padding: 0.5rem;
+            background: var(--secondary-light);
+            color: var(--secondary-dark);
+            border: 1px solid var(--secondary);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .analytics-container {
+            background: var(--bot-bubble);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .analytics-container h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .analytics-data {
+            margin-bottom: 1.5rem;
+        }
+        .analytics-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        .analytics-label {
+            font-weight: 500;
+            color: var(--text);
+        }
+        .analytics-value {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .chart-container {
+            height: 200px;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid #eee;
+        }
+        .analytics-tip {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: 1rem;
+        }
+        .help-container {
+            background: var(--bot-bubble);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .help-container h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .help-section {
+            margin-bottom: 1.5rem;
+        }
+        .help-section h4 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+        .help-section ul {
+            margin-left: 1.5rem;
+            color: var(--text-light);
+        }
+        .help-section li {
+            margin-bottom: 0.3rem;
+        }
+        @media (max-width: 768px) {
+            .intake-buttons {
+                grid-template-columns: 1fr;
+            }
+            .intake-button.custom {
+                grid-column: span 1;
+            }
+            .reminder-inputs {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .reminder-options {
+                flex-direction: column;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Add clear button
+function addClearButton() {
+    const clearButton = document.createElement('button');
+    clearButton.textContent = 'Clear Chat';
+    clearButton.className = 'clear-button';
+    clearButton.setAttribute('aria-label', 'Clear chat history');
+    clearButton.onclick = () => {
+        if (confirm('Clear chat history? This cannot be undone.')) {
+            chatMessages.innerHTML = '';
+            saveChatHistory();
+            addMessage("Chat cleared. How can I help you?");
+        }
+    };
+
+    const chatHeader = document.querySelector('.chat-header');
+    if (chatHeader) {
+        clearButton.style.position = 'absolute';
+        clearButton.style.right = '1rem';
+        clearButton.style.top = '50%';
+        clearButton.style.transform = 'translateY(-50%)';
+        clearButton.style.padding = '0.3rem 0.8rem';
+        clearButton.style.background = 'rgba(255,255,255,0.2)';
+        clearButton.style.border = '1px solid rgba(255,255,255,0.3)';
+        clearButton.style.borderRadius = '20px';
+        clearButton.style.color = 'white';
+        clearButton.style.cursor = 'pointer';
+        clearButton.style.transition = 'all 0.3s ease';
+        clearButton.addEventListener('mouseover', () => {
+            clearButton.style.background = 'rgba(255,255,255,0.3)';
+        });
+        clearButton.addEventListener('mouseout', () => {
+            clearButton.style.background = 'rgba(255,255,255,0.2)';
+        });
+        chatHeader.style.position = 'relative';
+        chatHeader.appendChild(clearButton);
+    }
+}
+    </script>
+
+
+</body>
+</html>
